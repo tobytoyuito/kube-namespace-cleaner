@@ -1,0 +1,2 @@
+kubernetes==6.0.0
+vsts==0.1.5

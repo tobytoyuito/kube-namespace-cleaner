@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cleaner_vsts_pat
+  namespace: cicd
+type: Opaque
+data:
+  vsts_pat: <Your PAT>
+
+---
+apiVersion: extensions/v1beta1
+kind: CronJob
+metadata:
+  namespace: cicd
+  name: namespace-cleaner
+spec:
+  schedule: 0 * * * *
+  jobTemplate:
+    spec:
+      containers: 
+      - env:
+        - name: MAX_NAMESPACE_INACTIVE_DAYS
+          value: 5
+        - name: VSTS_PAT
+              valueFrom:
+                secretKeyRef:
+                  name: cleaner_vsts_pat
+                  key: vsts_pat
+        image: tobyto/kube-namespace-cleaner
+        name: cleaner
+      restartPolicy: OnFailure
