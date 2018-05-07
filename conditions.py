@@ -40,14 +40,28 @@ class VSTSBranchDeletedCondition(object):
         :param vsts_pat: VSTS Pat that has Code Reading permission
         """
         self.credentials = BasicAuthentication('', vsts_pat)
+        self.vsts_base_url_key = "vsts_base_url"
+        self.vsts_repository_id_key = "vsts_repository_id"
+        self.branch_key = "branch"
 
     def satisfy(self, namespace):
         print("%s: Checking deleted branch condition." % namespace.metadata.name)
+        
+        if (
+            namespace.metadata.annotations is None 
+            or self.vsts_base_url_key not in namespace.metadata.annotations
+            or self.vsts_repository_id_key not in namespace.metadata.annotations
+            or self.branch_key not in namespace.metadata.annotations
+        ):
+            print("Can't find vsts info in %s" % namespace.metadata.name)
+            return False
+
         # vsts_base_url -- a vsts base url like: https://your-acount.visualstudio.com/DefaultCollection
-        vsts_base_url = namespace.metadata.annotations["vsts_base_url"]
-        vsts_repository_id = namespace.metadata.annotations["vsts_repository_id"]
+        vsts_base_url = namespace.metadata.annotations[self.vsts_base_url_key]
+        vsts_repository_id = namespace.metadata.annotations[self.vsts_repository_id_key]
+        branch_name = namespace.metadata.annotations[self.branch_key]
 
         connection = VssConnection(base_url=vsts_base_url, creds=self.credentials)
-        self.client = connection.get_client('vsts.git.v4_0.git_client.GitClient')
-        self.branches = set([branch.name for branch in self.client.get_branches(vsts_repository_id)])
-        return namespace.metadata.name not in self.branches
+        client = connection.get_client('vsts.git.v4_0.git_client.GitClient')
+        all_branches = [branch.name for branch in client.get_branches(vsts_repository_id)]
+        return branch_name not in all_branches

@@ -20,7 +20,7 @@ def main():
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
         InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
-        #VSTSBranchDeletedCondition(vsts_token),
+        VSTSBranchDeletedCondition(vsts_token),
     ]
 
     namespaces = v1api.list_namespace()

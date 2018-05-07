@@ -1,31 +1,66 @@
+kind: Namespace
 apiVersion: v1
-kind: Secret
 metadata:
-  name: cleaner_vsts_pat
+  name: cicd
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: namespace-manager
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["namespaces"]
+  verbs: ["get", "watch", "list", "delete"]
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments"]
+  verbs: ["get", "watch", "list"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cleanup-namespace
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: cicd
+roleRef:
+  kind: ClusterRole
+  name: namespace-manager
+  apiGroup: rbac.authorization.k8s.io
+
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: cleaner-vsts
   namespace: cicd
 type: Opaque
 data:
-  vsts_pat: <Your PAT>
+  vsts_pat: <your pat>   # need to remove
 
 ---
-apiVersion: extensions/v1beta1
 kind: CronJob
+apiVersion: batch/v1beta1
 metadata:
   namespace: cicd
   name: namespace-cleaner
 spec:
-  schedule: 0 * * * *
+  schedule: "* * * * *"
   jobTemplate:
     spec:
-      containers: 
-      - env:
-        - name: MAX_NAMESPACE_INACTIVE_DAYS
-          value: 5
-        - name: VSTS_PAT
+      template:
+        spec:
+          containers:
+          - name: cleaner
+            image: tobyto/kube-namespace-cleaner
+            env:
+            - name: MAX_NAMESPACE_INACTIVE_DAYS
+              value: "5"
+            - name: VSTS_PAT
               valueFrom:
                 secretKeyRef:
-                  name: cleaner_vsts_pat
+                  name: cleaner-vsts
                   key: vsts_pat
-        image: tobyto/kube-namespace-cleaner
-        name: cleaner
-      restartPolicy: OnFailure
+          restartPolicy: OnFailure
