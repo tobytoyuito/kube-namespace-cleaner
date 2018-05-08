@@ -64,4 +64,5 @@ spec:
                 secretKeyRef:
                   name: cleaner-vsts
                   key: vsts_pat
-          restartPolicy: OnFailure
+          # pod sometimes losts connection to network, restart will keep failing
+          restartPolicy: Never

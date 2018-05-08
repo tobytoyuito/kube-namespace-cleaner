@@ -28,8 +28,7 @@ def main():
         print("-- Checking namespace %s --" % namespace.metadata.name)
         
         # clean up if all of the conditions are met
-        # map in 3.x python is lazy, so it'll stop once one condition returns false
-        cleanup = all(map(lambda c: c.satisfy(namespace), cleanup_conditions))
+        cleanup = all([c.satisfy(namespace) for c in cleanup_conditions])
         
         # delete namespace
         if cleanup:
