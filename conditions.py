@@ -28,9 +28,13 @@ class InactiveDeploymentCondition(object):
             return (datetime.datetime.now(timezone) - deployment_condition.last_update_time).days <= self.max_inactive_days
 
         # at least one deployment is updated within max_inactive_days days, we consider this namespace active
-        active = any(map(lambda d: any(map(lambda c: is_active(c), d.status.conditions)), deployments.items))
+        
+        #and again list comprehensions if you like them ,
+        def checkdeployment(d)
+            return any([is_active(c) for c in d.status.conditions])
 
-        return not active
+        return not any([checkdeployment(d) for d in  deployments.items])
+
 
 # branch is deleted in the given existing branches
 class VSTSBranchDeletedCondition(object):
