@@ -11,9 +11,9 @@ class AnnotationAllowCleanupIsTrueCondition(object):
         annotations = namespace.metadata.annotations
         return annotations is not None and ('allowCleanup' in annotations) and annotations['allowCleanup'].lower() == 'true'
 
-# no new deployment for days specified by MAX_AGE, default to 5
+# no new deployment for days specified by MAX_AGE, default to 1
 class InactiveDeploymentCondition(object):
-    def __init__(self, api_client_v1beta1, max_inactive_days = 5):
+    def __init__(self, api_client_v1beta1, max_inactive_days = 1):
         self.max_inactive_days = int(max_inactive_days)
         self.api_client = api_client_v1beta1
 

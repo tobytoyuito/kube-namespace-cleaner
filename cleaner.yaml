@@ -47,7 +47,8 @@ metadata:
   namespace: cicd
   name: namespace-cleaner
 spec:
-  schedule: "* * * * *"
+  # run daily at 1 am
+  schedule: "0 1 * * *"
   jobTemplate:
     spec:
       template:
