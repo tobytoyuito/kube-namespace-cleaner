@@ -35,7 +35,7 @@ def main():
         if cleanup:
             print("Cleaning up namespace %s" % namespace.metadata.name)
             # real cleanup will be enable later once it's tested
-            #v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+            v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
 
     print("Finish clean up script")
 
