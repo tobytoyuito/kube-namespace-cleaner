@@ -7,7 +7,7 @@ This is a python script to delete old namespace that are no longer use based on 
 
 Condition 1 and 3 require change to the namespace's annotation. We need to get the annotation to our base yamls.
 
-This script is built into a docker image in https://hub.docker.com/r/tobyto/kube-namespace-cleaner/
+This script is built into a docker image in https://hub.docker.com/r/tobyto/kube-namespace-cleaner/. The image size is 124MB.
 
 And then you can deploy this image to your kubernetes cluster as a cronjob by following [these steps](#steps-to-deploy-to-kubernetes). It'll run daily to clean up the namespace.
 
