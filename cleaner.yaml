@@ -9,10 +9,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: namespace-manager
 rules:
-- apiGroups: [""]
+- apiGroups: ["", "extensions", "apps"]
   resources: ["namespaces"]
   verbs: ["get", "watch", "list", "delete"]
-- apiGroups: [""]
+- apiGroups: ["", "extensions", "apps"]
   resources: ["deployments"]
   verbs: ["get", "watch", "list"]
 
@@ -49,6 +49,7 @@ metadata:
 spec:
   # run daily at 1 am
   schedule: "0 1 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
