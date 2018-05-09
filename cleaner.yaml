@@ -9,10 +9,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: namespace-manager
 rules:
-- apiGroups: ["", "extensions", "apps"]
+- apiGroups: [""]
   resources: ["namespaces"]
   verbs: ["get", "watch", "list", "delete"]
-- apiGroups: ["", "extensions", "apps"]
+- apiGroups: [""]
   resources: ["deployments"]
   verbs: ["get", "watch", "list"]
 
@@ -38,7 +38,7 @@ metadata:
   namespace: cicd
 type: Opaque
 data:
-  vsts_pat: <your pat>   # need to remove
+  vsts_pat: <your pat>
 
 ---
 kind: CronJob
