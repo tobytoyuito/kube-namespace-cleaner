@@ -41,8 +41,8 @@ class VSTSBranchDeletedCondition(object):
         :param vsts_pat: VSTS Pat that has Code Reading permission
         """
         self.credentials = BasicAuthentication('', vsts_pat)
-        self.vsts_base_url_key = "vsts_base_url"
-        self.vsts_repository_id_key = "vsts_repository_id"
+        self.vsts_base_url_key = "vstsBaseUrl"
+        self.vsts_repository_id_key = "vstsRepositoryId"
         self.branch_key = "branch"
 
     def satisfy(self, namespace):
