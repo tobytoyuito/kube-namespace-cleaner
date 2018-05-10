@@ -48,7 +48,7 @@ metadata:
   name: namespace-cleaner
 spec:
   # run daily at 1 am
-  schedule: "0 1 * * *"
+  schedule: "* * * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -66,4 +66,6 @@ spec:
                   name: cleaner-vsts
                   key: vsts_pat
           # pod sometimes losts connection to network, restart will keep failing
+          activeDeadlineSeconds: 30
           restartPolicy: Never
+          
