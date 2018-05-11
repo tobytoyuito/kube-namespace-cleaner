@@ -25,7 +25,6 @@ class InactiveDeploymentCondition(object):
 
         def is_active(deployment_condition):
             timezone = deployment_condition.last_update_time.tzinfo
-            print((datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= self.max_inactive_time)
             return (datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= self.max_inactive_time
 
         def checkdeployment(d):
