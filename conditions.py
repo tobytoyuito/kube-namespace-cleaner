@@ -11,10 +11,10 @@ class AnnotationAllowCleanupIsTrueCondition(object):
         annotations = namespace.metadata.annotations
         return annotations is not None and ('allowCleanup' in annotations) and annotations['allowCleanup'].lower() == 'true'
 
-# no new deployment for days specified by MAX_AGE, default to 1
+# no new deployment for certain hours, default to 24
 class InactiveDeploymentCondition(object):
-    def __init__(self, api_client_v1beta1, max_inactive_days = 1):
-        self.max_inactive_days = int(max_inactive_days)
+    def __init__(self, api_client_v1beta1, max_inactive_hours = 24):
+        self.max_inactive_time = datetime.timedelta(hours=int(max_inactive_hours))
         self.api_client = api_client_v1beta1
 
     def satisfy(self, namespace):
@@ -25,13 +25,14 @@ class InactiveDeploymentCondition(object):
 
         def is_active(deployment_condition):
             timezone = deployment_condition.last_update_time.tzinfo
-            return (datetime.datetime.now(timezone) - deployment_condition.last_update_time).days <= self.max_inactive_days
+            print((datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= self.max_inactive_time)
+            return (datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= self.max_inactive_time
 
         def checkdeployment(d):
-            return any([is_active(c) for c in d.status.conditions])
+            return any(is_active(c) for c in d.status.conditions)
 
         # at least one deployment is updated within max_inactive_days days, we consider this namespace active
-        return not any([checkdeployment(d) for d in  deployments.items])
+        return not any(checkdeployment(d) for d in  deployments.items)
 
 # branch is deleted in the given existing branches
 class VSTSBranchDeletedCondition(object):

@@ -15,7 +15,7 @@ def main():
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
-    max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_DAYS']
+    max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
 
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
@@ -28,7 +28,7 @@ def main():
         print("-- Checking namespace %s --" % namespace.metadata.name)
         
         # clean up if all of the conditions are met
-        cleanup = all([c.satisfy(namespace) for c in cleanup_conditions])
+        cleanup = all(c.satisfy(namespace) for c in cleanup_conditions)
         
         # delete namespace
         if cleanup:
