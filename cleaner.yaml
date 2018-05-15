@@ -58,8 +58,8 @@ spec:
           - name: cleaner
             image: tobyto/kube-namespace-cleaner
             env:
-            - name: MAX_NAMESPACE_INACTIVE_DAYS
-              value: "5"
+            - name: MAX_NAMESPACE_INACTIVE_HOURS
+              value: "24"
             - name: VSTS_PAT
               valueFrom:
                 secretKeyRef:
