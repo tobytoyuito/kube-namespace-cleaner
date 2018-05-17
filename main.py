@@ -19,7 +19,7 @@ def main():
 
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
-        InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
+        #InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
         VSTSRefDeletedCondition(vsts_token),
     ]
 
