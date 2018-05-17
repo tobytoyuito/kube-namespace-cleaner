@@ -1,5 +1,5 @@
 from kubernetes import client, config
-from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeploymentCondition, VSTSBranchDeletedCondition
+from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeploymentCondition, VSTSRefDeletedCondition
 import os
 
 def main():
@@ -20,7 +20,7 @@ def main():
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
         InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
-        VSTSBranchDeletedCondition(vsts_token),
+        VSTSRefDeletedCondition(vsts_token),
     ]
 
     namespaces = v1api.list_namespace()
