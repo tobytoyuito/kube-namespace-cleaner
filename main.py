@@ -2,8 +2,7 @@ from kubernetes import client, config
 from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeploymentCondition, VSTSRefDeletedCondition
 import os
 
-def main():
-    
+def clean():
     try:
         print("Loading in-cluster config")
         config.load_incluster_config()
@@ -40,14 +39,14 @@ def main():
             cleaned += 1
 
     print("Finish clean up script")
-    return cleaned
+    return { 'namespaces_cleaned' : cleaned, "namespaces_scanned" :  namespaces.items:}
 
-if __name__ == '__main__':
+def main():
     start = time.time()
-    eventdict = { 'name' : 'msftkube', 'time' : start, 'eventtype' = 'json'}
+    eventdict = { 'name' : 'aeva.cleaner', 'time' : start, 'eventtype' : 'json'}
     try
-        namespacescleaned = main()
-        eventdict['namespacescleaned'] = namespacescleaned
+        stats = clean()
+        eventdict.update(stats)
         eventdict['succes'] = True
      except Exception as e:
             result["error"] =  str(e)
@@ -57,3 +56,6 @@ if __name__ == '__main__':
             eventdict['ElapsedTime'] = time.time() - start
             print(json.dumps(eventdict))
     
+if __name__ == '__main__':
+    main()
+
