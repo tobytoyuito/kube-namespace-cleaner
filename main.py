@@ -3,6 +3,7 @@ from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeployment
 import os
 
 def main():
+    
     try:
         print("Loading in-cluster config")
         config.load_incluster_config()
@@ -24,6 +25,7 @@ def main():
     ]
 
     namespaces = v1api.list_namespace()
+    cleaned = 0
     for namespace in namespaces.items:
         print("-- Checking namespace %s --" % namespace.metadata.name)
         
@@ -37,9 +39,23 @@ def main():
             print("Cleaning up namespace %s" % namespace.metadata.name)
             # real cleanup will be enable later once it's tested
             v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+            cleaned += 1
 
     print("Finish clean up script")
-
+    return cleaned
 
 if __name__ == '__main__':
-    main()
+    start = time.time()
+    eventdict = { 'name' : 'msftkube', 'time' : start, 'eventtype' = 'json'}
+    try
+        namespacescleaned = main()
+        eventdict['namespacescleaned'] = namespacescleaned
+        eventdict['succes'] = True
+     except Exception as e:
+            result["error"] =  str(e)
+            result["success"] = False
+            raise e
+    finally
+            eventdict['ElapsedTime'] = time.time() - start
+            print(json.dumps(eventdict))
+    
