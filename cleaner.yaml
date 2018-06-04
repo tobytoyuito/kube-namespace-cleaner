@@ -38,7 +38,7 @@ metadata:
   namespace: cicd
 type: Opaque
 data:
-  vsts_pat: <your pat>   # need to remove
+  vsts_pat: <your pat>
 
 ---
 kind: CronJob
@@ -48,7 +48,8 @@ metadata:
   name: namespace-cleaner
 spec:
   # run daily at 1 am
-  schedule: "0 1 * * *"
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
@@ -57,11 +58,14 @@ spec:
           - name: cleaner
             image: tobyto/kube-namespace-cleaner
             env:
-            - name: MAX_NAMESPACE_INACTIVE_DAYS
-              value: "5"
+            - name: MAX_NAMESPACE_INACTIVE_HOURS
+              value: "24"
             - name: VSTS_PAT
               valueFrom:
                 secretKeyRef:
                   name: cleaner-vsts
                   key: vsts_pat
-          restartPolicy: OnFailure
+          # pod sometimes losts connection to network, restart will keep failing
+          activeDeadlineSeconds: 30
+          restartPolicy: Never
+          

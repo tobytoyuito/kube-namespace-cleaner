@@ -1,5 +1,5 @@
 from kubernetes import client, config
-from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeploymentCondition, VSTSBranchDeletedCondition
+from conditions import AnnotationAllowCleanupIsTrueCondition, InactiveDeploymentCondition, VSTSRefDeletedCondition
 import os
 
 def main():
@@ -15,13 +15,13 @@ def main():
     v1beta1api = client.AppsV1beta1Api()
 
     # reading environment variable
-    vsts_token = os.environ['VSTS_PAT'] #throw if empty?
-    max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_DAYS']
+    vsts_token = os.environ['VSTS_PAT']
+    max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
 
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
-        InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
-        VSTSBranchDeletedCondition(vsts_token),
+        #InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days), 
+        VSTSRefDeletedCondition(vsts_token),
     ]
 
     namespaces = v1api.list_namespace()
@@ -30,9 +30,7 @@ def main():
         print("-- Checking namespace %s --" % namespace.metadata.name)
         
         # clean up if all of the conditions are met
-        # map in 3.x python is lazy, so it'll stop once one condition returns false
-        #hmm though all took a function like map. Could also use list comprehensions
-        cleanup = all([c.satisfy(namespace) for c in cleanup_conditions])
+        cleanup = all(c.satisfy(namespace) for c in cleanup_conditions)
         
         # delete namespace
         if cleanup:
