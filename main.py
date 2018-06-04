@@ -50,7 +50,7 @@ def main():
     try:
         stats = clean()
         eventdict.update(stats)
-        eventdict['succes'] = True
+        eventdict['success'] = True
     except Exception as exception:
         eventdict["error"] = str(exception)
         eventdict["success"] = False
