@@ -42,7 +42,7 @@ def clean():
             cleaned += 1
 
     print("Finish clean up script")
-    return {'namespaces_cleaned' : cleaned, "namespaces_scanned" :  namespaces.items}
+    return {'namespaces_cleaned' : cleaned, "namespaces_scanned" :  len(namespaces.items)}
 
 def main():
     start = time.time()
