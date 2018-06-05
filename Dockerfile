@@ -8,6 +8,9 @@ FROM python:3.6.5-alpine3.7
 
 # only copy necessary folder from previous image
 COPY --from=python-base /install /usr/local
+COPY .pylintrc /app/
 COPY *.py /app/
+#Wanted to do this in python base but I would have to double install dependencies (pylint fails if modules aren't installed).
+RUN pylint --rcfile /app/.pylintrc /app/main.py
 
 CMD python /app/main.py
