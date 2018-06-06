@@ -6,6 +6,8 @@ RUN pip install --install-option="--prefix=/install" -r /requirements.txt
 
 FROM python:3.6.5-alpine3.7
 
+LABEL description="Built from https://github.com/tobytoyuito/kube-namespace-cleaner"
+
 # only copy necessary folder from previous image
 COPY --from=python-base /install /usr/local
 COPY .pylintrc /app/
