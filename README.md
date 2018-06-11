@@ -1,3 +1,5 @@
+[![Build Status](https://msasg.visualstudio.com/_apis/public/build/definitions/b03927a9-4d41-4a29-865d-b1d980f6dee9/5650/badge)](https://msasg.visualstudio.com/Engineering%20Fundamentals/_build/index?definitionId=5650)
+
 # Kubernetes Namespace Cleaner
 
 This is a python script to delete old namespace that are no longer use based on following 3 conditions:
