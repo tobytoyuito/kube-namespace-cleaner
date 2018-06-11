@@ -60,6 +60,8 @@ spec:
             env:
             - name: MAX_NAMESPACE_INACTIVE_HOURS
               value: "24"
+            - name: NS_WHITELIST
+              value: "aether-master,aether-demo"
             - name: VSTS_PAT
               valueFrom:
                 secretKeyRef:
