@@ -83,9 +83,9 @@ def NotWhitelisted(whitelist):
     return lambda namespace: not namespace in whitelist
 
 #suprised there's not a built in function for this
-def AND(x, y):
-    return lambda namespace: x(namespace) and y(namespace)
+def AND(*conditions):
+    return lambda namespace: all(c(namespace) for c in conditions)
 
-def OR(x, y):
-    return lambda namespace: x(namespace) or  y(namespace)
+def OR(*conditions):
+    return lambda namespace: any(c(namespace) for c in conditions)
         
