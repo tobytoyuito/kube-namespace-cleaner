@@ -4,8 +4,9 @@ import json
 
 from kubernetes import client, config
 from conditions import AnnotationAllowCleanupIsTrueCondition
-#from conditions import InactiveDeploymentCondition
+from conditions import InactiveDeploymentCondition
 from conditions import VSTSRefDeletedCondition
+import conditions
 
 def clean():
     try:
@@ -16,15 +17,20 @@ def clean():
         config.load_kube_config()
 
     v1api = client.CoreV1Api()
-    #v1beta1api = client.AppsV1beta1Api()
-    #max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
+    v1beta1api = client.AppsV1beta1Api()
+    max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
+
+    ns_whitelist = os.environ['NS_WHITELIST'].split(',')
+
+    stale = conditions.AND(InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days),
+                           conditions.NotWhitelisted(ns_whitelist))
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
+
     cleanup_conditions = [
         AnnotationAllowCleanupIsTrueCondition(),
-        #InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days),
-        VSTSRefDeletedCondition(vsts_token),
+        conditions.OR(VSTSRefDeletedCondition(vsts_token), stale)
     ]
 
     namespaces = v1api.list_namespace()
@@ -32,7 +38,7 @@ def clean():
     for namespace in namespaces.items:
         print("-- Checking namespace %s --" % namespace.metadata.name)
         # clean up if all of the conditions are met
-        cleanup = all(c.satisfy(namespace) for c in cleanup_conditions)
+        cleanup = all(c(namespace) for c in cleanup_conditions)
 
         # delete namespace
         if cleanup:
