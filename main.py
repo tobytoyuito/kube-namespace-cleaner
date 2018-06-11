@@ -22,8 +22,8 @@ def clean():
 
     ns_whitelist = os.environ['NS_WHITELIST'].split(',')
 
-    stale = conditions.AND(InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days),
-                           conditions.NotWhitelisted(ns_whitelist))
+    stale = conditions.AND(conditions.NotWhitelisted(ns_whitelist),
+                           InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days))
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']

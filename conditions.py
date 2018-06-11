@@ -80,7 +80,12 @@ def VSTSRefDeletedCondition(vsts_pat):
 
 
 def NotWhitelisted(whitelist):
-    return lambda namespace: not namespace in whitelist
+    def satisfy(namespace):
+        whitelisted = namespace.metadata.name in whitelist
+        if whitelisted:
+            print("%s is whitelisted" % namespace.metadata.name)
+        return not whitelisted
+    return satisfy
 
 #suprised there's not a built in function for this
 def AND(*conditions):
