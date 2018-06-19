@@ -35,18 +35,24 @@ def clean():
 
     namespaces = v1api.list_namespace()
     cleaned = 0
+    failed = 0
     for namespace in namespaces.items:
         print("-- Checking namespace %s --" % namespace.metadata.name)
 
-        # delete namespace if all conditions are met
-        if cleanup_conditions(namespace):
-            print("Cleaning up namespace %s" % namespace.metadata.name)
-            # real cleanup will be enable later once it's tested
-            v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
-            cleaned += 1
+        try:
+            # delete namespace if all conditions are met
+            if cleanup_conditions(namespace):
+                print("Cleaning up namespace %s" % namespace.metadata.name)
+                # real cleanup will be enable later once it's tested
+                v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+                cleaned += 1
+        except Exception ex:
+            print("Failed to cleanup %s" % namespace.metadata.name)
+            print(str(ex))
+            failed += 1
 
     print("Finish clean up script")
-    return {'namespaces_cleaned' : cleaned, "namespaces_scanned" :  len(namespaces.items)}
+    return {'namespaces_cleaned' : cleaned, "namespaces_scanned" :  len(namespaces.items), "namespaces_failed": failed}
 
 def main():
     start = time.time()
