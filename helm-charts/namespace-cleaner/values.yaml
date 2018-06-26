@@ -19,6 +19,8 @@ cleaner:
       memory: "500Mi"
   # max namespace inactive hours
   maxAge: "24"
+  # white list namespaces, separated by comma
+  whiteListNamespaces: ""
   restartPolicy: Never
   activeDeadlineSeconds: 120
   # Name of the pre-provisioned imagePullSecret that provides access to the ACR

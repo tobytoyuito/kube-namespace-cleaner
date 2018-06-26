@@ -24,6 +24,8 @@ spec:
             env:
             - name: MAX_NAMESPACE_INACTIVE_HOURS
               value: {{default 24 .Values.cleaner.maxAge | quote}}
+            - name: NS_WHITELIST
+              value: {{ .Values.cleaner.whiteListNamespaces | quote}}
             - name: VSTS_PAT
               valueFrom:
                 secretKeyRef:
