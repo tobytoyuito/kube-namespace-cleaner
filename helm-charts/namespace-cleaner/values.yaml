@@ -1,0 +1,30 @@
+# Default values for namespace-cleaner.
+
+cronjob:
+  # hourly
+  schedule: "0 * * * *"
+
+image:
+  repository: airsharedcontainers.azurecr.io/tobytoyuito/kube-namespace-cleaner
+  tag: 2558782
+  pullPolicy: IfNotPresent
+
+cleaner:
+  resources:
+    limits:
+      cpu: "1"
+      memory: "1000Mi"
+    requests:
+      cpu: "0.75"
+      memory: "500Mi"
+  # max namespace inactive hours
+  maxAge: "24"
+  restartPolicy: Never
+  activeDeadlineSeconds: 120
+  # Name of the pre-provisioned imagePullSecret that provides access to the ACR
+  # that hosts the namespace-cleaner image
+  acrSecretName: "airsharedcontainers"
+
+# secret value that shouldn't check in to git
+# secrets:
+#   vstsPat: <vsts pat>

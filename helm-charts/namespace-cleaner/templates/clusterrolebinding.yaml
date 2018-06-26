@@ -1,0 +1,17 @@
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app: {{ template "namespace-cleaner.name" . }}
+    chart: {{ template "namespace-cleaner.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "namespace-cleaner.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "namespace-cleaner.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "namespace-cleaner.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
