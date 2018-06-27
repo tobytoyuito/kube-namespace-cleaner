@@ -17,7 +17,7 @@ spec:
           serviceAccountName: {{ template "namespace-cleaner.fullname" . }}
           containers:
           - name: cleaner
-            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | toString }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             resources:
               {{- toYaml .Values.cleaner.resources | nindent 14 }}
