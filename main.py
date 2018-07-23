@@ -18,6 +18,7 @@ def clean():
 
     v1api = client.CoreV1Api()
     v1beta1api = client.AppsV1beta1Api()
+    rbacApi = client.RbacAuthorizationV1Api()
     max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
 
     ns_whitelist = os.environ['NS_WHITELIST'].split(',')
@@ -46,6 +47,8 @@ def clean():
                 print("Cleaning up namespace %s" % namespace.metadata.name)
                 try:
                     v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+                    rbacApi.delete_collection_cluster_role(label_selector='namespace='+namespace.metadata.name)
+                    rbacApi.delete_collection_cluster_role_binding(label_selector='namespace='+namespace.metadata.name)
                     cleaned += 1
                 except Exception as ex:
                     print("Failed to cleanup %s" % namespace.metadata.name)
