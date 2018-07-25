@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "1.0"
 description: Cronjob to clean up expired namespace. 
 name: namespace-cleaner
-version: 0.1.2558782
+version: 0.1.2839851
 home: https://github.com/tobytoyuito/kube-namespace-cleaner/blob/master/README.md
 sources:
   - https://github.com/tobytoyuito/kube-namespace-cleaner

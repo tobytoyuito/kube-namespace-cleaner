@@ -7,7 +7,7 @@ cronjob:
 image:
   repository: airsharedcontainers.azurecr.io/tobytoyuito/kube-namespace-cleaner
   # tag has to be a string, please quote it
-  tag: "2558782"
+  tag: "2839851"
   pullPolicy: IfNotPresent
 
 cleaner:

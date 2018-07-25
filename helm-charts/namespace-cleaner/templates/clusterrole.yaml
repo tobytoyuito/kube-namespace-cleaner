@@ -8,9 +8,9 @@ metadata:
     heritage: {{ .Release.Service }}
   name: {{ template "namespace-cleaner.fullname" . }}
 rules:
-- apiGroups: ["", "extensions", "apps"]
-  resources: ["namespaces"]
-  verbs: ["get", "watch", "list", "delete"]
+- apiGroups: ["", "extensions", "apps", "rbac.authorization.k8s.io"]
+  resources: ["namespaces", "clusterroles", "clusterrolebindings"]
+  verbs: ["get", "watch", "list", "delete", "deletecollection"]
 - apiGroups: ["", "extensions", "apps"]
   resources: ["deployments"]
   verbs: ["get", "watch", "list"]
