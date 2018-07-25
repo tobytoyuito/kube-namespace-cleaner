@@ -9,7 +9,7 @@ metadata:
   name: {{ template "namespace-cleaner.fullname" . }}
 rules:
 - apiGroups: ["", "extensions", "apps"]
-  resources: ["namespaces"]
+  resources: ["namespaces", "clusterroles", "clusterrolebindings"]
   verbs: ["get", "watch", "list", "delete"]
 - apiGroups: ["", "extensions", "apps"]
   resources: ["deployments"]
