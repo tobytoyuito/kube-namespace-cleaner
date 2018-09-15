@@ -50,6 +50,7 @@ def VSTSRefDeletedCondition(vsts_pat):
     credentials = BasicAuthentication('', vsts_pat)
     vsts_base_url_key = "vstsBaseUrl"
     vsts_repository_id_key = "vstsRepositoryId"
+    vsts_project_key = "vstsProject"
     ref_key = "gitRef"
 
     def satisfy(namespace):
@@ -68,10 +69,11 @@ def VSTSRefDeletedCondition(vsts_pat):
         vsts_base_url = namespace.metadata.annotations[vsts_base_url_key]
         vsts_repository_id = namespace.metadata.annotations[vsts_repository_id_key]
         ref_name = namespace.metadata.annotations[ref_key]
+        vsts_project = namespace.metadata.annotations.get(vsts_project_key, None)
 
         connection = VssConnection(base_url=vsts_base_url, creds=credentials)
         client = connection.get_client('vsts.git.v4_0.git_client.GitClient')
-        all_refs = [ref.name for ref in client.get_refs(vsts_repository_id)]
+        all_refs = [ref.name for ref in client.get_refs(repository_id=vsts_repository_id, project=vsts_project)]
         result = ref_name not in all_refs
 
         print("%s: Result of vsts ref deleted condition: %s" % (namespace.metadata.name, result))
