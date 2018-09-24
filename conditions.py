@@ -73,6 +73,9 @@ def VSTSRefDeletedCondition(vsts_pat):
 
         connection = VssConnection(base_url=vsts_base_url, creds=credentials)
         client = connection.get_client('vsts.git.v4_0.git_client.GitClient')
+
+        # repository_id can be name if project != None
+        # doc from https://github.com/Microsoft/vsts-python-api/blob/db69b3bdb08d926ff64239c3d651741a2ae4ea87/vsts/vsts/git/v4_0/git_client_base.py#L2365
         all_refs = [ref.name for ref in client.get_refs(repository_id=vsts_repository_id, project=vsts_project)]
         result = ref_name not in all_refs
 
