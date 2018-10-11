@@ -62,8 +62,7 @@ def VSTSRefDeletedCondition(vsts_pat):
                 or vsts_repository_id_key not in namespace.metadata.annotations
                 or ref_key not in namespace.metadata.annotations
         ):
-            print("Can't find vsts info in %s" % namespace.metadata.name)
-            return False
+            raise Exception("Can't find vsts info in %s. make sure url, id, and ref are present" % namespace.metadata.name)
 
         # vsts_base_url -- a vsts base url like: https://your-acount.visualstudio.com/DefaultCollection
         vsts_base_url = namespace.metadata.annotations[vsts_base_url_key]
