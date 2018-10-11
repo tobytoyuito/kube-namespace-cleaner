@@ -97,4 +97,3 @@ def AND(*conditions):
 
 def OR(*conditions):
     return lambda namespace: any(c(namespace) for c in conditions)
-        
