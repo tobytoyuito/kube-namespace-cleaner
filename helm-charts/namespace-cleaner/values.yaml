@@ -7,6 +7,7 @@ cronjob:
 image:
   repository: airsharedcontainers.azurecr.io/tobytoyuito/kube-namespace-cleaner
   # tag has to be a string, please quote it
+  # Also never change without also changing .Chart.Version
   tag: "3538259"
   pullPolicy: IfNotPresent
 
