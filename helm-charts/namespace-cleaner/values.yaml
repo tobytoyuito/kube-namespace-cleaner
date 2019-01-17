@@ -8,7 +8,7 @@ image:
   repository: airsharedcontainers.azurecr.io/tobytoyuito/kube-namespace-cleaner
   # tag has to be a string, please quote it
   # Also never change without also changing .Chart.Version
-  tag: "3538259"
+  tag: "4399007"
   pullPolicy: IfNotPresent
 
 cleaner:
