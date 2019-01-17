@@ -3,7 +3,7 @@ appVersion: "1.0"
 description: Cronjob to clean up expired namespace. 
 name: namespace-cleaner
 #keep locked with image.tag value
-version: 0.1.3538259
+version: 0.1.4399007
 home: https://github.com/tobytoyuito/kube-namespace-cleaner/blob/master/README.md
 sources:
   - https://github.com/tobytoyuito/kube-namespace-cleaner
