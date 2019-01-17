@@ -31,7 +31,7 @@ def InactiveDeploymentCondition(api_client_v1beta1, max_inactive_hours):
             return (datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= max_inactive_time
 
         def checkdeployment(d):
-            return any(is_active(c) for c in d.status.conditions)
+            return any(is_active(c) for c in d.status.conditions where c.type == 'Progressing')
 
         # at least one deployment is updated within max_inactive_days days, we consider this namespace active
         result = not any(checkdeployment(d) for d in  deployments.items)
