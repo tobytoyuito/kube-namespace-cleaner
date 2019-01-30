@@ -39,17 +39,13 @@ def clean():
     failed_check_condition = 0
     for namespace in namespaces.items:
         print("-- Checking namespace %s --" % namespace.metadata.name)
-
         try:
             # delete namespace if all conditions are met
             if cleanup_conditions(namespace):
                 print("Cleaning up namespace %s" % namespace.metadata.name)
-                try:
-                    v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+                if clean_namespace(namespace.metadata.name, v1api):
                     cleaned += 1
-                except Exception as ex:
-                    print("Failed to cleanup %s" % namespace.metadata.name)
-                    print(str(ex))
+                else:
                     failed_cleanup += 1
         except Exception as ex:
             print("Failed to check condition of %s" % namespace.metadata.name)
@@ -67,6 +63,28 @@ def clean():
         "namespaces_failed_cleanup": failed_check_condition,
     }
 
+def clean_namespace(namespace, v1api):
+    try:
+        helm_clean(namespace, v1api)
+        v1api.delete_namespace(namespace, client.V1DeleteOptions())
+        return True
+    except Exception as ex:
+        print("Failed to cleanup %s" % namespace)
+        print(str(ex))
+        return False
+
+def helm_clean(namespace, v1api):
+    '''
+    Helm stores all it's releases as config maps in kube-system namespaces
+    in the format geneva-logger--simple-repo-pull-179029 or {app}--{ns}.v{revision}
+    '''
+    #do this once rather than for each namespace?
+    configmaps = v1api.list_namespaced_config_map('kube-system', label_selector='OWNER=TILLER').items
+    nskey = '--{}.v'.format(namespace)
+    deletable_releases = [c for c in configmaps if nskey in c.metadata.name]
+    for r in  deletable_releases:
+        v1api.delete_namespaced_config_map(r, 'kube-system')
+
 def main():
     start = time.time()
     eventdict = {'name' : 'kubernetes.namespacecleaner', 'time' : start, 'eventtype' : 'json'}
@@ -81,6 +99,7 @@ def main():
     finally:
         eventdict['ElapsedTime'] = time.time() - start
         print(json.dumps(eventdict))
+
 
 if __name__ == '__main__':
     main()
