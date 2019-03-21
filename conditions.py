@@ -15,26 +15,27 @@ def AnnotationAllowCleanupIsTrueCondition():
         return result
     return satisfy
 
-# no new deployment for certain hours, default to 24
-def InactiveDeploymentCondition(api_client_v1beta1, max_inactive_hours):
+
+def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
+    '''
+    no new replicaset or certain hours, default to 24
+    does not handle daemonset, statefulsets, jobs or servies
+    '''
     max_inactive_time = datetime.timedelta(hours=int(max_inactive_hours))
-    api_client = api_client_v1beta1
+    api_client = api_client_v1
 
     def satisfy(namespace):
         """return true if no active deployments"""
 
         print("%s: Checking inactive condition." % namespace.metadata.name)
-        deployments = api_client.list_namespaced_deployment(namespace.metadata.name)
+        replica_sets = api_client.list_namespaced_replica_set(namespace.metadata.name)
 
-        def is_active(deployment_condition):
-            timezone = deployment_condition.last_update_time.tzinfo
-            return (datetime.datetime.now(timezone) - deployment_condition.last_update_time) <= max_inactive_time
+        def is_active(replica_set):
+            created = replica_set.metadata.creation_timestamp
+            return (datetime.datetime.utcnow() - created) <= max_inactive_time
 
-        def checkdeployment(d):
-            return any(is_active(c) for c in d.status.conditions if c.type == 'Progressing')
-
-        # at least one deployment is updated within max_inactive_days days, we consider this namespace active
-        result = not any(checkdeployment(d) for d in  deployments.items)
+        # at least one rs is created within max_inactive_days days, we consider this namespace active
+        result = not any(is_active(r) for r in  replica_sets.items)
 
         print("%s: Result of inactive condition: %s" % (namespace.metadata.name, result))
         return result

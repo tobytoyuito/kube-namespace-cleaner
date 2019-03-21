@@ -17,13 +17,13 @@ def clean():
         config.load_kube_config()
 
     v1api = client.CoreV1Api()
-    v1beta1api = client.AppsV1beta1Api()
+    v1appsapi = client.AppsV1Api()
     max_namespace_inactive_days = os.environ['MAX_NAMESPACE_INACTIVE_HOURS']
 
     ns_whitelist = os.environ['NS_WHITELIST'].split(',')
 
     stale = conditions.AND(conditions.NotWhitelisted(ns_whitelist),
-                           InactiveDeploymentCondition(v1beta1api, max_namespace_inactive_days))
+                           InactiveDeploymentCondition(v1appsapi, max_namespace_inactive_days))
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
