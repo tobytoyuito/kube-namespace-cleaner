@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone, timedelta
 from msrest.authentication import BasicAuthentication
 from vsts.vss_connection import VssConnection
 
@@ -21,7 +21,7 @@ def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
     no new replicaset for certain hours, default to 24
     does not handle daemonset, statefulsets, jobs or services... Not clear how to tell when they are updated
     '''
-    max_inactive_time = datetime.timedelta(hours=int(max_inactive_hours))
+    max_inactive_time = timedelta(hours=int(max_inactive_hours))
     api_client = api_client_v1
 
     def satisfy(namespace):
@@ -32,7 +32,7 @@ def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
 
         def is_active(replica_set):
             created = replica_set.metadata.creation_timestamp
-            active = (datetime.datetime.utcnow() - created) <= max_inactive_time
+            active = (datetime.now(timezone.utc) - created) <= max_inactive_time
             if active:
                 print("{}replicaset is created at {}".format(replica_set.metadata.name, created))
             return active

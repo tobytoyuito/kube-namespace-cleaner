@@ -27,7 +27,7 @@ def clean():
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
-    dry_run = os.environ.get('DRY_RUN', True) #change this default after testng
+    dry_run = os.environ.get('DRY_RUN', "true").tolower() == "true"
 
     cleanup_conditions = conditions.AND(
         AnnotationAllowCleanupIsTrueCondition(),

@@ -28,6 +28,7 @@ cleaner:
   # Name of the pre-provisioned imagePullSecret that provides access to the ACR
   # that hosts the namespace-cleaner image
   acrSecretName: "airsharedcontainers"
+  dry_run: "true"
 
 # secret value that shouldn't check in to git
 # secrets:

@@ -12,5 +12,5 @@ rules:
   resources: ["namespaces"]
   verbs: ["get", "watch", "list", "delete"]
 - apiGroups: ["", "extensions", "apps"]
-  resources: ["deployments"]
+  resources: ["replicasets"]
   verbs: ["get", "watch", "list"]
