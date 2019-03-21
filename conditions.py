@@ -34,7 +34,7 @@ def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
             created = replica_set.metadata.creation_timestamp
             active = (datetime.now(created.tzinfo) - created) <= max_inactive_time
             if active:
-                print("{}replicaset is created at {}".format(replica_set.metadata.name, created))
+                print("{} replicaset is created at {}".format(replica_set.metadata.name, created))
             return active
         # at least one rs is created within max_inactive_days days, we consider this namespace active
         result = not any(is_active(r) for r in replica_sets.items)
