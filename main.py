@@ -27,7 +27,7 @@ def clean():
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
-    dry_run = os.environ.get('DRY_RUN', "true").tolower() == "true"
+    dry_run = os.environ.get('DRY_RUN', "true").lower() == "true"
 
     cleanup_conditions = conditions.AND(
         AnnotationAllowCleanupIsTrueCondition(),
