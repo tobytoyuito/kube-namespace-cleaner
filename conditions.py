@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from msrest.authentication import BasicAuthentication
 from vsts.vss_connection import VssConnection
 
@@ -32,7 +32,7 @@ def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
 
         def is_active(replica_set):
             created = replica_set.metadata.creation_timestamp
-            active = (datetime.now(timezone.utc) - created) <= max_inactive_time
+            active = (datetime.now(created.tzinfo) - created) <= max_inactive_time
             if active:
                 print("{}replicaset is created at {}".format(replica_set.metadata.name, created))
             return active
