@@ -18,8 +18,8 @@ def AnnotationAllowCleanupIsTrueCondition():
 
 def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
     '''
-    no new replicaset or certain hours, default to 24
-    does not handle daemonset, statefulsets, jobs or servies
+    no new replicaset for certain hours, default to 24
+    does not handle daemonset, statefulsets, jobs or services... Not clear how to tell when they are updated
     '''
     max_inactive_time = datetime.timedelta(hours=int(max_inactive_hours))
     api_client = api_client_v1
@@ -37,7 +37,7 @@ def InactiveDeploymentCondition(api_client_v1, max_inactive_hours):
                 print("{}replicaset is created at {}".format(replica_set.metadata.name, created))
             return active
         # at least one rs is created within max_inactive_days days, we consider this namespace active
-        result = not any(is_active(r) for r in  replica_sets.items)
+        result = not any(is_active(r) for r in replica_sets.items)
 
         print("%s: Result of inactive condition: %s" % (namespace.metadata.name, result))
         return result
