@@ -27,6 +27,7 @@ def clean():
 
     # reading environment variable
     vsts_token = os.environ['VSTS_PAT']
+    dry_run = os.environ.get('DRY_RUN', True) #change this default after testng
 
     cleanup_conditions = conditions.AND(
         AnnotationAllowCleanupIsTrueCondition(),
@@ -45,8 +46,9 @@ def clean():
             if cleanup_conditions(namespace):
                 print("Cleaning up namespace %s" % namespace.metadata.name)
                 try:
-                    v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
-                    cleaned += 1
+                    if not dry_run:
+                        v1api.delete_namespace(namespace.metadata.name, client.V1DeleteOptions())
+                        cleaned += 1
                 except Exception as ex:
                     print("Failed to cleanup %s" % namespace.metadata.name)
                     print(str(ex))
